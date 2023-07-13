@@ -12,18 +12,30 @@ app.get('/', async (req, res) => {
 
 app.get('/:paymentId', async (req, res) => {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      ignoreHTTPSErrors: true,
+      args: [
+        '--no-sandbox',
+        '--single-process',
+        '--no-zygote',
+        '--disable-setuid-sandbox',
+      ],
+    });
     const page = await browser.newPage();
 
     await page.setDefaultNavigationTimeout(0);
 
-    await page.goto(`https://staging.crystalsound.ai/billing-detail/${req.params.paymentId}`, {waitUntil: 'networkidle2'});
+    await page.goto(
+      `https://staging.crystalsound.ai/billing-detail/${req.params.paymentId}`,
+      {waitUntil: 'networkidle2'}
+    );
     //await page.goto(`http://localhost:3000/billing-detail/${req.params.paymentId}`, {waitUntil: 'networkidle2'});
-    const pdf = await page.pdf({ format: 'A4'});
-    
+    const pdf = await page.pdf({format: 'A4'});
+
     await browser.close();
-    res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length })
-    res.send(pdf)
+    res.set({'Content-Type': 'application/pdf', 'Content-Length': pdf.length});
+    res.send(pdf);
     return;
   } catch (e) {
     console.log('error: ', e);
