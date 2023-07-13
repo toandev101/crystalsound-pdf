@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const express = require('express');
+require('dotenv').config();
 
 const app = express();
 // Serve the files in /assets at the URI /assets.
@@ -21,6 +22,10 @@ app.get('/:paymentId', async (req, res) => {
         '--no-zygote',
         '--disable-setuid-sandbox',
       ],
+      executablePath:
+        process.env.NODE_ENV === 'production'
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
     });
     const page = await browser.newPage();
 
