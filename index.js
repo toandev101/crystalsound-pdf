@@ -8,7 +8,7 @@ app.use('/assets', express.static('assets'));
 
 app.get('/', async (req, res) => {
   res.writeHead(200, {'Content-Type': 'text/html'});
-  res.end('Hello World!');
+  res.end('CrystalSound PDF Billing!');
 });
 
 app.get('/:paymentId', async (req, res) => {
@@ -28,14 +28,12 @@ app.get('/:paymentId', async (req, res) => {
           : puppeteer.executablePath(),
     });
     const page = await browser.newPage();
-
     await page.setDefaultNavigationTimeout(0);
 
     await page.goto(
       `https://staging.crystalsound.ai/billing-detail/${req.params.paymentId}`,
       {waitUntil: 'networkidle2'}
     );
-    //await page.goto(`http://localhost:3000/billing-detail/${req.params.paymentId}`, {waitUntil: 'networkidle2'});
     const pdf = await page.pdf({format: 'A4'});
 
     await browser.close();
