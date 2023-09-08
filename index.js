@@ -31,7 +31,7 @@ app.get('/:paymentId', async (req, res) => {
     await page.setDefaultNavigationTimeout(0);
 
     await page.goto(
-      `https://staging.crystalsound.ai/billing-detail/${req.params.paymentId}`,
+      `https://crystalsound.ai/billing-detail/${req.params.paymentId}`,
       {waitUntil: 'networkidle2'}
     );
     const pdf = await page.pdf({format: 'A4'});
